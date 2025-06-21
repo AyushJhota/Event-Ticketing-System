@@ -120,6 +120,7 @@ class QRCodeGenerator:
                 ticket_code, qr_location = self.generate_qr_code(data, name)
                 df.at[index, 'Ticket Code'] = ticket_code
                 df.at[index, 'QR Location'] = qr_location
+            df['Scanned'] = "No"
             df.to_excel(self.excel_file, index=False)
             messagebox.showinfo("Success", "QR codes generated successfully!")
         except Exception as e:

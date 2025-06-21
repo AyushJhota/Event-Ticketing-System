@@ -69,6 +69,8 @@ class QRCodeScanner:
             for col in columns:
                 menu.add_command(label=col, command=lambda value=col: self.column_var.set(value))
             self.column_var.set(columns[0] if columns else "")
+            if "Scanned" not in self.df.columns:
+                self.df["Scanned"] = "No"
         except Exception as e:
             messagebox.showerror("Error", f"Error loading columns: {str(e)}")
 
@@ -124,7 +126,13 @@ class QRCodeScanner:
         if self.selected_column not in self.df.columns:
             return "Selected column not found in the Excel file.", None
 
+        if self.selected_column not in self.df.columns:
+            return "Selected column not found in the Excel file.", None
+
         if data in self.df[self.selected_column].values:
+            idx = self.df.index[self.df[self.selected_column] == data].tolist()[0]
+            if "Scanned" in self.df.columns and self.df.at[idx, "Scanned"] == "Yes":
+                return "Sorry, this ticket has already been scanned.", None
             attendee_name = self.df.loc[self.df[self.selected_column] == data, 'Name'].values[0]
             return f"Welcome {attendee_name}!!!", attendee_name
         else:
